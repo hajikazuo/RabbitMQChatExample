@@ -1,4 +1,6 @@
-﻿using RabbitMQ.Client;
+﻿using Common;
+using RabbitMQ.Client;
+using System.Text.Json;
 
 var factory = new ConnectionFactory { HostName = "localhost"};
 using var connection = factory.CreateConnection();
@@ -18,6 +20,9 @@ while (true)
 
     if (message == "")
         break;
+
+    var user = new User() { Id = 1, Name = "Nilton" };
+    message = JsonSerializer.Serialize(user);
 
     var body = System.Text.Encoding.UTF8.GetBytes(message);
     channel.BasicPublish(exchange: "",

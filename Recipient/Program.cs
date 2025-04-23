@@ -1,5 +1,7 @@
-﻿using RabbitMQ.Client;
+﻿using Common;
+using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using System.Text.Json;
 
 var factory = new ConnectionFactory { HostName = "localhost" };
 using var connection = factory.CreateConnection();
@@ -18,6 +20,7 @@ consumer.Received += (model, ea) =>
 {
     var body = ea.Body.ToArray();
     var message = System.Text.Encoding.UTF8.GetString(body);
+    var user = JsonSerializer.Deserialize<User>(message);
     Console.WriteLine($"[x] Recebido: {message}");
 };
 channel.BasicConsume(queue: "hello",
